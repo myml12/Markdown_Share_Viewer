@@ -58,8 +58,12 @@ function getGistRawUrl(gistInput: string): string | null {
   }
 }
 
-// Gist APIを使ってファイル一覧を取得
-async function getGistFiles(gistId: string): Promise<{ filename: string; raw_url: string }[]> {
+// Gist APIを使ってファイル一覧とメタデータを取得
+async function getGistFiles(gistId: string): Promise<{
+  files: { filename: string; raw_url: string }[];
+  description: string;
+  owner: string;
+}> {
   try {
     const response = await fetch(`https://api.github.com/gists/${gistId}`);
     if (!response.ok) {
@@ -67,13 +71,17 @@ async function getGistFiles(gistId: string): Promise<{ filename: string; raw_url
     }
     const data = await response.json();
     const files = Object.values(data.files as Record<string, { filename: string; raw_url: string }>);
-    return files.map(file => ({
-      filename: file.filename,
-      raw_url: file.raw_url,
-    }));
+    return {
+      files: files.map(file => ({
+        filename: file.filename,
+        raw_url: file.raw_url,
+      })),
+      description: data.description || '',
+      owner: data.owner?.login || 'unknown',
+    };
   } catch (error) {
     console.error('Error fetching Gist files:', error);
-    return [];
+    return { files: [], description: '', owner: 'unknown' };
   }
 }
 
@@ -85,6 +93,8 @@ function ViewerContent() {
   const [gistInput, setGistInput] = useState<string>('');
   const [shareUrl, setShareUrl] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
+  const [gistTitle, setGistTitle] = useState<string>('');
+  const [gistDescription, setGistDescription] = useState<string>('');
 
   // 共有モードかどうかを判定
   const isShareMode = searchParams.get('view') === 'share' || searchParams.get('share') === 'true';
@@ -118,18 +128,24 @@ function ViewerContent() {
 
       // Gist IDが取得できた場合は、API経由でファイル一覧を取得
       if (gistId) {
-        const files = await getGistFiles(gistId);
-        if (files.length === 0) {
+        const gistData = await getGistFiles(gistId);
+        if (gistData.files.length === 0) {
           throw new Error('Gistが見つかりませんでした');
         }
 
+        // Gistのメタデータを保存
+        setGistDescription(gistData.description);
+        // タイトルは最初のMarkdownファイル名、またはdescription、または最初のファイル名
+        const mdFile = gistData.files.find(f => f.filename.endsWith('.md') || f.filename.endsWith('.markdown'));
+        const title = gistData.description || mdFile?.filename || gistData.files[0]?.filename || 'Markdown Document';
+        setGistTitle(title);
+
         // Markdownファイルを優先的に探す
-        const mdFile = files.find(f => f.filename.endsWith('.md') || f.filename.endsWith('.markdown'));
         if (mdFile) {
           rawUrl = mdFile.raw_url;
         } else {
           // Markdownファイルがない場合は最初のファイルを使用
-          rawUrl = files[0].raw_url;
+          rawUrl = gistData.files[0].raw_url;
         }
       } else {
         // フォールバック: 直接Raw URLを構築
@@ -168,14 +184,70 @@ function ViewerContent() {
       const shareUrlParam = input; // 元の入力形式をそのまま使用
       const generatedShareUrl = `${currentUrl}?gist=${encodeURIComponent(shareUrlParam)}&view=share`;
       setShareUrl(generatedShareUrl);
+
+      // Markdownの最初の見出しをタイトルとして使用（タイトルが未設定の場合）
+      if (!gistTitle && markdown) {
+        const firstHeading = markdown.match(/^#+\s+(.+)$/m);
+        if (firstHeading) {
+          setGistTitle(firstHeading[1].trim());
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'エラーが発生しました');
       setMarkdownHtml('');
       setShareUrl('');
+      setGistTitle('');
+      setGistDescription('');
     } finally {
       setLoading(false);
     }
   };
+
+  // OGPメタタグを更新（共有モードの場合）
+  useEffect(() => {
+    if (isShareMode && gistTitle) {
+      // タイトルを更新
+      document.title = gistTitle;
+
+      // OGPメタタグを更新または作成
+      const updateMetaTag = (property: string, content: string) => {
+        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute('property', property);
+          document.head.appendChild(meta);
+        }
+        meta.setAttribute('content', content);
+      };
+
+      const updateMetaName = (name: string, content: string) => {
+        let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute('name', name);
+          document.head.appendChild(meta);
+        }
+        meta.setAttribute('content', content);
+      };
+
+      const currentUrl = window.location.href;
+      const description = gistDescription || gistTitle;
+
+      // OGPタグ
+      updateMetaTag('og:title', gistTitle);
+      updateMetaTag('og:description', description);
+      updateMetaTag('og:url', currentUrl);
+      updateMetaTag('og:type', 'website');
+
+      // Twitter Card
+      updateMetaName('twitter:card', 'summary');
+      updateMetaName('twitter:title', gistTitle);
+      updateMetaName('twitter:description', description);
+
+      // 通常のメタタグ
+      updateMetaName('description', description);
+    }
+  }, [isShareMode, gistTitle, gistDescription]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

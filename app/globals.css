@@ -15,12 +15,12 @@ body {
 
 /* Markdownスタイリング */
 .markdown-content {
-  @apply max-w-4xl mx-auto px-4 py-8;
+  @apply max-w-4xl mx-auto px-3 py-6;
 }
 
 /* 共有モード用のスタイル（Zenn風） */
 .markdown-content.markdown-share-mode {
-  @apply max-w-3xl mx-auto px-6 py-12;
+  @apply max-w-3xl mx-auto px-6 py-3;
   font-size: 18px;
   line-height: 1.8;
   color: #1f2937;
