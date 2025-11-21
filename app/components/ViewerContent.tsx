@@ -153,8 +153,35 @@ export default function ViewerContent() {
       
       const markdown = await response.text();
       
-      // MarkdownをHTMLに変換
-      const html = await marked.parse(markdown);
+      // MarkdownをHTMLに変換（エラーハンドリング付き）
+      let html: string;
+      try {
+        html = await marked.parse(markdown);
+      } catch (parseError: any) {
+        console.error('Markdown parse error:', parseError);
+        // エラーが発生した場合は、エラーメッセージを確認
+        if (parseError?.message?.includes('Invalid regular expression')) {
+          // 正規表現エラーの場合、breaksのみを無効化して再試行（gfmは維持）
+          marked.setOptions({
+            breaks: false,
+            gfm: true, // テーブル表示のためにgfmは維持
+          });
+          try {
+            html = await marked.parse(markdown);
+            // 設定を元に戻す
+            marked.setOptions({
+              breaks: true,
+              gfm: true,
+            });
+          } catch (retryError) {
+            console.error('Markdown parse retry error:', retryError);
+            // それでもエラーが出る場合は、エラーメッセージを表示
+            throw new Error('Markdownの解析に失敗しました。内容を確認してください。');
+          }
+        } else {
+          throw parseError;
+        }
+      }
       
       // XSS対策: DOMPurifyでサニタイズ
       const sanitizedHtml = DOMPurify.sanitize(html, {
