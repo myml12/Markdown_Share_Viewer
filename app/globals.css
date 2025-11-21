@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', Meiryo, sans-serif;
+}
+
+/* Markdownスタイリング */
+.markdown-content {
+  @apply max-w-4xl mx-auto px-4 py-8;
+}
+
+/* 共有モード用のスタイル（Zenn風） */
+.markdown-content.markdown-share-mode {
+  @apply max-w-3xl mx-auto px-6 py-12;
+  font-size: 18px;
+  line-height: 1.8;
+  color: #1f2937;
+}
+
+.markdown-content.markdown-share-mode h1 {
+  @apply text-5xl font-bold mt-12 mb-6 pb-3 border-b-2 border-gray-300;
+  line-height: 1.3;
+}
+
+.markdown-content.markdown-share-mode h2 {
+  @apply text-4xl font-bold mt-10 mb-5 pb-2 border-b border-gray-300;
+  line-height: 1.4;
+}
+
+.markdown-content.markdown-share-mode h3 {
+  @apply text-3xl font-semibold mt-8 mb-4;
+  line-height: 1.5;
+}
+
+.markdown-content.markdown-share-mode h4 {
+  @apply text-2xl font-semibold mt-6 mb-3;
+  line-height: 1.5;
+}
+
+.markdown-content.markdown-share-mode h5 {
+  @apply text-xl font-semibold mt-5 mb-3;
+  line-height: 1.6;
+}
+
+.markdown-content.markdown-share-mode h6 {
+  @apply text-lg font-semibold mt-4 mb-2;
+  line-height: 1.6;
+}
+
+.markdown-content.markdown-share-mode p {
+  @apply mb-6;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.markdown-content.markdown-share-mode ul,
+.markdown-content.markdown-share-mode ol {
+  @apply mb-6 ml-8;
+}
+
+.markdown-content.markdown-share-mode li {
+  @apply mb-3;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.markdown-content.markdown-share-mode blockquote {
+  @apply border-l-4 border-gray-400 pl-6 italic my-6 text-gray-700;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.markdown-content.markdown-share-mode code {
+  @apply bg-gray-100 px-2 py-1 rounded text-base font-mono;
+  font-size: 16px;
+}
+
+.markdown-content.markdown-share-mode pre {
+  @apply bg-gray-900 rounded-lg p-6 overflow-x-auto mb-6;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.markdown-content.markdown-share-mode pre code {
+  @apply bg-transparent p-0 text-gray-100;
+  font-size: 15px;
+}
+
+.markdown-content.markdown-share-mode a {
+  @apply text-blue-600 hover:underline;
+}
+
+.markdown-content.markdown-share-mode img {
+  @apply max-w-full h-auto rounded-lg my-6;
+}
+
+.markdown-content.markdown-share-mode table {
+  @apply w-full border-collapse mb-6;
+  font-size: 17px;
+}
+
+.markdown-content.markdown-share-mode th,
+.markdown-content.markdown-share-mode td {
+  @apply border border-gray-300 px-4 py-3;
+}
+
+.markdown-content.markdown-share-mode th {
+  @apply bg-gray-100 font-semibold;
+}
+
+.markdown-content.markdown-share-mode hr {
+  @apply border-t border-gray-300 my-10;
+}
+
+/* 通常モードのスタイル */
+.markdown-content h1 {
+  @apply text-4xl font-bold mt-8 mb-4 pb-2 border-b border-gray-300;
+}
+
+.markdown-content h2 {
+  @apply text-3xl font-bold mt-6 mb-3 pb-2 border-b border-gray-300;
+}
+
+.markdown-content h3 {
+  @apply text-2xl font-semibold mt-5 mb-2;
+}
+
+.markdown-content h4 {
+  @apply text-xl font-semibold mt-4 mb-2;
+}
+
+.markdown-content h5 {
+  @apply text-lg font-semibold mt-3 mb-2;
+}
+
+.markdown-content h6 {
+  @apply text-base font-semibold mt-2 mb-2;
+}
+
+.markdown-content p {
+  @apply mb-4 leading-7;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  @apply mb-4 ml-6;
+}
+
+.markdown-content ul {
+  @apply list-disc;
+}
+
+.markdown-content ol {
+  @apply list-decimal;
+}
+
+.markdown-content li {
+  @apply mb-2;
+}
+
+.markdown-content blockquote {
+  @apply border-l-4 border-gray-400 pl-4 italic my-4 text-gray-700;
+}
+
+.markdown-content code {
+  @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.markdown-content pre {
+  @apply bg-gray-900 rounded-lg p-4 overflow-x-auto mb-4;
+}
+
+.markdown-content pre code {
+  @apply bg-transparent p-0 text-gray-100;
+}
+
+.markdown-content a {
+  @apply text-blue-600 hover:underline;
+}
+
+.markdown-content img {
+  @apply max-w-full h-auto rounded-lg my-4;
+}
+
+.markdown-content table {
+  @apply w-full border-collapse mb-4;
+}
+
+.markdown-content th,
+.markdown-content td {
+  @apply border border-gray-300 px-4 py-2;
+}
+
+.markdown-content th {
+  @apply bg-gray-100 font-semibold;
+}
+
+.markdown-content hr {
+  @apply border-t border-gray-300 my-8;
+}
