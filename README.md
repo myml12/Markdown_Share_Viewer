@@ -1,70 +1,45 @@
 # Markdown Share Viewer
 
-GitHub GistのMarkdownファイルを美しく表示するWebアプリケーションです。
+GitHub GistのMarkdownファイルを美しく表示し、資料共有に最適化されたWebアプリケーションです。
 
-## 機能
+## 概要
 
-- GitHub GistのURLまたはIDからMarkdownを取得して表示
-- シンタックスハイライト対応
-- XSS対策（DOMPurifyによるサニタイズ）
-- ダークモード対応
-- レスポンシブデザイン
+GitHub GistにMarkdownファイルを作成するだけで、見やすい資料として共有できます。GitHubのUIが表示されないクリーンな表示で、先方に資料を共有する際に最適です。
 
-## 使い方
+## 主な機能
 
-### 開発環境で起動
+### 📝 GitHub Gist対応
+GitHub GistのURLまたはIDを指定するだけで、Markdownファイルを取得して表示します。Gist APIを使用して自動的にMarkdownファイルを検出し、優先的に表示します。
 
-```bash
-# 依存関係のインストール
-npm install
+### 🎨 読みやすいデザイン
+読みやすい大きなフォントサイズ（18px）と適切な行間（1.8）を採用。ブログ記事のような見た目で、資料を快適に読むことができます。
 
-# 開発サーバーを起動
-npm run dev
-```
+### 🔗 共有モード
+Gistを表示すると、自動的に共有用リンクが生成されます。このリンクには `&view=share` パラメータが含まれており、先方に共有すると：
+- 入力フォームやヘッダーが非表示
+- Markdownコンテンツのみを表示
+- クリーンで見やすい表示
 
-ブラウザで `http://localhost:3000` を開きます。
+これにより、GitHubのUIが表示されず、資料のみが美しく表示されます。
 
-### Gistを表示する方法
+### 🎯 シンタックスハイライト
+コードブロックには自動的にシンタックスハイライトが適用されます。複数のプログラミング言語に対応しており、コードが読みやすく表示されます。
 
-1. **URLクエリパラメータで指定**
-   ```
-   http://localhost:3000?gist=https://gist.github.com/username/abc123
-   ```
-   または
-   ```
-   http://localhost:3000?gistId=abc123
-   ```
+### 🔒 セキュリティ
+すべてのHTML出力はDOMPurifyでサニタイズされており、XSS攻撃から保護されています。許可されたタグと属性のみが表示され、安全にMarkdownを表示できます。
 
-2. **フォームから入力**
-   - ページ上部の入力欄にGist URLまたはIDを入力
-   - 「表示」ボタンをクリック
+### 📱 レスポンシブデザイン
+モバイル・タブレット・デスクトップのすべてのデバイスで快適に閲覧できます。
 
 ## 技術スタック
 
-- **Next.js 14** (App Router)
-- **TypeScript**
-- **Tailwind CSS**
-- **marked.js** - Markdownパーサー
-- **DOMPurify** - XSS対策
-- **highlight.js** - シンタックスハイライト
-
-## セキュリティ
-
-- すべてのHTML出力はDOMPurifyでサニタイズされています
-- 許可されたタグと属性のみが表示されます
-- 外部リンクの安全性もチェックされます
-
-## デプロイ
-
-Vercelにデプロイする場合:
-
-```bash
-npm run build
-```
-
-その後、Vercelにプロジェクトをインポートするか、Vercel CLIを使用します。
+- Next.js 14 (App Router)
+- TypeScript
+- Tailwind CSS
+- marked.js
+- DOMPurify
+- highlight.js
 
 ## ライセンス
 
 MIT
-
